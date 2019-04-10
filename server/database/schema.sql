@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS inventory;
-CREATE DATABASE inventory;
-\C inventory;
+DROP DATABASE IF EXISTS cart_inventory;
+CREATE DATABASE cart_inventory;
+\C cart_inventory;
 
 CREATE TABLE inventory_items (
   sku SERIAL,
