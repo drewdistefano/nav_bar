@@ -75,7 +75,7 @@ class App extends Component {
 
   handleSearch(keyword){
     Axios
-    .get('http://localhost:4001/api/navbar/search', {"params": {"keyword": keyword}})
+    .get('http://ec2-3-19-70-44.us-east-2.compute.amazonaws.com:4001/api/navbar/search', {"params": {"keyword": keyword}})
     .then((data)=>{
       this.setState({
         searchItems: data.data.rows.length? data.data.rows : [{title: `no results found for "${keyword}"`}],
