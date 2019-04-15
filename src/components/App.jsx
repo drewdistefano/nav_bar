@@ -1,20 +1,36 @@
-import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 import styled from "styled-components";
-import Navbar from 'react-bootstrap/Navbar'
-import Nav from 'react-bootstrap/Nav'
-import NavDropdown from 'react-bootstrap/NavDropdown'
-import Form from 'react-bootstrap/Form'
-import FormControl from 'react-bootstrap/FormControl'
-import Button from 'react-bootstrap/Button'
-import Axios from "axios"
-import Container from "react-bootstrap/Container"
-import Modal from "react-bootstrap/Modal"
-import Col from "react-bootstrap/Col"
-import Row from "react-bootstrap/Row"
+import Axios from "axios";
+import { Row, Col, Modal, Container, Button, FormControl, Form, NavDropdown, Nav, Navbar } from 'react-bootstrap';
 
+const Styles = styled.div`
+  .navbar {
+    background-color: #CC0000;
+    line-height: 1.4285;
+    color: rgb(51, 51, 51);
+    font-family: Targetica, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    height: 75px;
+  }
 
-// targit color (red): #FF0101
+  #search-result {
+    line-height: 2.25;
+    font-size: "16pt";
+    width: "668px";
+  }
+
+  #nav-dropdown {
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  #search-dropdown {
+    color: #CC0000;
+  }
+
+`
 
 class App extends Component {
   constructor(props){
@@ -23,6 +39,7 @@ class App extends Component {
       categories: [],
       categoryItems: [],
       searchItems: [],
+      recentSearches: [],
       show: false,
       showSearch: false
     }
@@ -61,7 +78,7 @@ class App extends Component {
     .get('http://localhost:4001/api/navbar/search', {"params": {"keyword": keyword}})
     .then((data)=>{
       this.setState({
-        searchItems: data.data.rows,
+        searchItems: data.data.rows.length? data.data.rows : [{title: `no results found for "${keyword}"`}],
       });
     })
     .catch((err)=>{console.log('Axios get failed: ', err)})
@@ -108,56 +125,31 @@ class App extends Component {
     })
   }
 
-  // onClick={()=>{console.log(this.refs.categories); this.handleShow()}}
-
   render(){
     return (
-      <Navbar style={{fontFamily: "Helvetica Neue"}} bg="danger" variant="light">
-        <Navbar.Brand><img src = 'https://bit.ly/2P1StzW' height='70' width='70'></img></Navbar.Brand>
-        <NavDropdown drop="left" ref="categories" style={{position: "left"}} title="Categories">
-          {!this.state.categoryItems.length ? this.state.categories.map((category)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}}><NavDropdown.Item onClick={()=>{this.handleShow(); this.getItemsByCategory(category.category)}}>{category.category}</NavDropdown.Item></Container>}) :
-  this.state.categoryItems.map((categoryItem)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}}><NavDropdown.Item onClick={()=>{this.handleHide(); changeItem(categoryItem.sku)}}>{categoryItem.title}</NavDropdown.Item></Container>})}
-        </NavDropdown>
-        <Container>
-          <Row>
-            <Form inline>
-            <FormControl onClick={(event)=>{this.handleKeyPress(event)}} onKeyUp={(event)=>{this.handleKeyPress(event)}} ref="search" type="search" placeholder="Search" style={{borderRadius: "50px", height: "50px", width: "668px"}}/>
-              <img src='https://bit.ly/2v3vRG2' height="30px" width="30px" style={{opacity: "0.65"}} onClick={()=>{this.handleExit()}}></img>
-            </Form>
-          </Row>
-          <Row>
-            <NavDropdown ref="searchResults" show={this.state.searchItems.length ? true : false} collapseOnSelect="true" style={{top: "25px"}}>
-              {this.state.searchItems.map((searchItem)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}} onClick={()=>{this.handleSelect(); changeItem(searchItem.sku)}}><NavDropdown.Item show href="#action/3.1">{searchItem.title}</NavDropdown.Item></Container>})}
-            </NavDropdown>
-          </Row>
-        </Container>
-      </Navbar>
-
-
-// <Navbar style={{fontFamily: "Helvetica Neue"}} bg="danger" variant="light">
-// <Navbar.Brand>
-//   <img src = 'https://bit.ly/2P1StzW' height='70' width='70'></img>
-// </Navbar.Brand>
-// <Navbar.Toggle aria-controls="basic-navbar-nav" />
-// <Navbar.Collapse id="basic-navbar-nav">
-//   <Nav className="mr-auto">
-//     <NavDropdown title="Categories" id="basic-nav-dropdown">
-//       {!this.state.categoryItems.length ? this.state.categories.map((category)=>{return <NavDropdown.Item onClick={()=>{this.getItemsByCategory(category.category)}} href="#action/3.1">{category.category}</NavDropdown.Item>}) :
-//       this.state.categoryItems.map((categoryItem)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}}><NavDropdown.Item href="#action/3.1">{categoryItem.title}</NavDropdown.Item></Container>})}
-//     </NavDropdown>
-//   </Nav>
-//   <Form inline>
-//     <FormControl onKeyUp={(event)=>{this.handleKeyPress(event)}} ref="search" type="search" placeholder="Search" className="mr-sm-1" style={{borderRadius: "50px", height: "50px", width: "668px"}}/>
-//     <img src='https://bit.ly/2v3vRG2' height="30px" width="30px" style={{opacity: "0.65"}}></img>
-//   </Form>
-//     <Nav >
-//         <NavDropdown expanded="true" collapseOnSelect="true" style={{right: "700px", top: "25px"}} id="basic-nav-dropdown">
-//           {this.state.searchItems.map((searchItem)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}} onClick={()=>{changeItem(searchItem.sku)}}><NavDropdown.Item show href="#action/3.1">{searchItem.title}</NavDropdown.Item></Container>})}
-//         </NavDropdown>
-//     </Nav>
-// </Navbar.Collapse>
-// </Navbar>
-
+      <Styles>
+        <Navbar expand="lg">
+          <Navbar.Brand href="/"><img src="https://i.ibb.co/mJmgNQQ/Targit-White.png" height="40px"/></Navbar.Brand>
+          {/* <Navbar.Toggle aria-controls="basic-navbar-nav"/> */}
+          {/* <Navbar.Collapse id="basic-navbar-nav"> */}
+            {/* <Nav className=> */}
+              <NavDropdown id="nav-dropdown" drop="left" ref="categories" title="Categories">
+                {!this.state.categoryItems.length ? this.state.categories.map((category)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}}><NavDropdown.Item onClick={()=>{this.handleShow(); this.getItemsByCategory(category.category)}}>{category.category}</NavDropdown.Item></Container>}) :
+                this.state.categoryItems.map((categoryItem)=>{return <Container style={{borderBottom: "3px", lineHeight: 1.4285, fontSize: "16pt", width: "668px"}}><NavDropdown.Item onClick={()=>{this.handleHide(); changeItem(categoryItem.sku)}}>{categoryItem.title}</NavDropdown.Item></Container>})}
+              </NavDropdown>
+              <Form inline>
+                <FormControl onClick={(event)=>{this.handleKeyPress(event)}} onKeyUp={(event)=>{this.handleKeyPress(event)}} ref="search" type="search" placeholder="Search" className="mr-sm-1" style={{borderRadius: "50px", height: "40px", width: "668px"}}/>
+              </Form>
+                {this.state.searchItems.length? <img src='https://bit.ly/2v3vRG2' height="20px" style={{opacity: "0.65"}} onClick={()=>{this.handleExit()}}/> : null}
+                {/* <Nav > */}
+                    <NavDropdown id="search-dropdown" ref="searchResults" show={this.state.searchItems.length ? true : false} collapseOnSelect="true" expanded="true" collapseOnSelect="true" style={{right: "700px", top: "25px"}}>
+                    {this.state.searchItems.map((searchItem, index, array)=>{return <Container id="search-result" style={index === array.length-1 ? {width: "668px"} : {width: "668px", borderBottom: "1px solid rgb(214, 214, 214)", marginLeft: "15px", marginRight: "15px"}} onClick={()=>{this.handleSelect(); changeItem(searchItem.sku)}}><NavDropdown.Item class="search-result" show href="#action/3.1">{searchItem.title}</NavDropdown.Item></Container>})}
+                    </NavDropdown>
+                {/* </Nav> */}
+            {/* </Nav> */}
+          {/* </Navbar.Collapse> */}
+        </Navbar>
+      </Styles>        
     )
   }
 }
