@@ -1,6 +1,6 @@
 const { Client } = require('pg')
 const client = new Client({
-  host: 'targit-cart.cttz70y892d2.us-east-2.rds.amazonaws.com',
+  host: 'drewdistefano.cttz70y892d2.us-east-2.rds.amazonaws.com',
   port: 5432,
   user: 'drewdistefano',
   database: 'postgres',
