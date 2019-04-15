@@ -52,7 +52,7 @@ class App extends Component {
 
   getCategories(){
     Axios
-    .get('http://localhost:4001/api/navbar/getCategories')
+    .get('http://ec2-3-19-70-44.us-east-2.compute.amazonaws.com:4001/api/navbar/getCategories')
     .then((data)=>{
       console.log('Axios get successful: ', data)
       this.setState({
@@ -64,7 +64,7 @@ class App extends Component {
 
   getItemsByCategory(category){
     Axios
-    .get('http://localhost:4001/api/navbar/getItemsByCategory', {"params": {"category": category}})
+    .get('http://ec2-3-19-70-44.us-east-2.compute.amazonaws.com:4001/api/navbar/getItemsByCategory', {"params": {"category": category}})
     .then((data)=>{
       this.setState({
         categoryItems: data.data.rows,
